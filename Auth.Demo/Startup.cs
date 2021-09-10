@@ -27,6 +27,7 @@ namespace Auth.Demo
             var tokenKey = Configuration.GetValue<string>("TokenKey");
             var key = Encoding.ASCII.GetBytes(tokenKey);
 
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -46,6 +47,18 @@ namespace Auth.Demo
                     ClockSkew = TimeSpan.Zero,
                 };
             });
+
+            // ajustando para policy - com mais aspectos
+            // https://dotnetcorecentral.com/blog/asp-net-core-authorization/
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminAndPoweruser",
+                    policy => policy.RequireRole("Administrator", "Poweruser"));
+                options.AddPolicy("EmployeeMoreThan20Years",
+                    policy => policy.Requirements.Add(new EmployeeWithMoreYearsRequirement(20)));
+            });
+
+
 
             services.AddSingleton<ITokenRefresher>(x => 
                 new TokenRefresher(key, x.GetService<IJWTAuthenticationManager>()));

@@ -55,7 +55,7 @@ namespace Auth.Demo
 
             try
             {
-                return validateToken(token);
+                return  validateToken(token);
             }
             catch (Exception ex)
             {
